@@ -3,11 +3,13 @@ const app = express(); //Creates an Express application and saves it to a variab
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose"),
       DATABASE_NAME = 'yelp_camp',
-      mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`
-    //   MONGOLAB_URI = `mongodb://juliobell2014@gmail.com:Timbre@1966@ds229078.mlab.com:29078/heroku_r654fzpr`
+      mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`,
+    //   MONGOLAB_URI = `mongodb://dbuser1966:RCC6JyMgGIffKY3E.mlab.com:29078/heroku_r654fzpr`
+    //   MONGOLAB_URI = `mongodb://dbuser1966:Timbre@1966.mlab.com:29078/heroku_19dths09`
+       MONGOLAB_URI = 'mongodb://dbuser1966:Timbre1966@ds331548.mlab.com:31548/heroku_19dths09'
 
-// mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
-mongoose.connect(mongoURI, { useNewUrlParser: true });
+mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
+// mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 //SCHEMA SETUP
 const campgroundSchema = new mongoose.Schema({
