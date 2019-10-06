@@ -1,0 +1,19 @@
+{
+  "name": "yelpcamp-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pirueto2004/yelpcamp-page-app.git"
+  },
+  "author": "Julio Bell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pirueto2004/yelpcamp-page-app/issues"
+  },
+  "homepage": "https://github.com/pirueto2004/yelpcamp-page-app#readme"
+}
