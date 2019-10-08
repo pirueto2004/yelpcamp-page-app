@@ -1,8 +1,24 @@
 <% include partials/header %>
 
-<h1><%= campground.name %></h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="card my-4">
+                <div class="card-body">
+                        <div class="card-title"><h2><%= campground.name %></h2></div>
+                        <img src="<%= campground.image %>" class="img-fluid" width="500">
+                        
+                </div>
+                <div class="card-footer">
+                        <p class="py-3"><%= campground.description %></p>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
 
-<img src="<%= campground.image %>" class="img-fluid" width="500">
-<p><%= campground.description %></p>
 
 <% include partials/footer %>
