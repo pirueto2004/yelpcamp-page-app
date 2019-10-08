@@ -4,10 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require("mongoose"),
       DATABASE_NAME = 'yelp_camp',
       mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`
-    //   MONGOLAB_URI = `mongodb://dbuser1966:RCC6JyMgGIffKY3E.mlab.com:29078/heroku_r654fzpr`
-    //   MONGOLAB_URI = `mongodb://dbuser1966:Timbre@1966.mlab.com:29078/heroku_19dths09`
-    //    MONGOLAB_URI = 'mongodb://dbuser1966:Timbre1966@ds331548.mlab.com:31548/heroku_19dths09'
-
+    
 //Set up promises with mongoose
 mongoose.Promise = Promise; 
 
