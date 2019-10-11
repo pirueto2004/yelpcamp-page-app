@@ -3,7 +3,7 @@ const app = express(); //Creates an Express application and saves it to a variab
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose"),
       DATABASE_NAME = 'yelp_camp',
-      mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`
+      mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`;
     
 //Set up promises with mongoose
 mongoose.Promise = Promise; 
