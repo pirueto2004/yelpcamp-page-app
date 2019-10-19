@@ -1,7 +1,8 @@
 const mongoose = require("mongoose"),
       Campground = require("./models/campground"),
       Comment   = require("./models/comment");
- 
+
+//Array with some pre-defined objects to start the database
 const data = [
     {
         name: "Cloud's Rest", 
@@ -27,11 +28,11 @@ function seedDB(){
             console.log(err);
         }
         console.log("removed campgrounds!");
-        Comment.remove({}, function(err) {
-            if(err){
-                console.log(err);
-            }
-            console.log("removed comments!");
+        // Comment.remove({}, function(err) {
+        //     if(err){
+        //         console.log(err);
+        //     }
+        //     console.log("removed comments!");
              //add a few campgrounds
             data.forEach(function(seed){
                 Campground.create(seed, function(err, campground){
@@ -52,10 +53,10 @@ function seedDB(){
                                     campground.save();
                                     console.log("Created new comment");
                                 }
-                            });
+                        });
                     }
                 });
-            });
+            // });
         });
     }); 
     //add a few comments

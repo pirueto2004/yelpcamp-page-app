@@ -37,6 +37,8 @@ mongoose.connect(dbUrl, { useNewUrlParser: true });
 //Tell Express to use 'body-parser'
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(express.static(__dirname + '/public'));
+
 app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
 
 const PORT = process.env.PORT || 3000;
