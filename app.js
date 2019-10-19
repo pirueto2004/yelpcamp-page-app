@@ -1,10 +1,17 @@
-const express = require('express');
-const app = express(); //Creates an Express application and saves it to a variable
-const bodyParser = require('body-parser');
-const mongoose = require("mongoose"),
+const express = require('express'),
+      app = express(), //Creates an Express application and saves it to a variable
+      bodyParser = require('body-parser'),
+      mongoose = require("mongoose"),
       DATABASE_NAME = 'yelp_camp',
       mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`;
-    
+
+//Require models      
+const Campground = require("./models/campground"),
+      seedDB = require("./seeds");      
+ 
+//Initialize database with new seeds
+seedDB();
+
 //Set up promises with mongoose
 mongoose.Promise = Promise; 
 
@@ -13,15 +20,6 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
 // mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
 mongoose.connect(dbUrl, { useNewUrlParser: true });
-
-//SCHEMA SETUP
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-const Campground = mongoose.model("Campground", campgroundSchema);
 
 // Campground.create(
 //     {
