@@ -33,14 +33,14 @@ const PORT = process.env.PORT || 3000;
 // var IP = process.env.IP || '192.168.0.1'; set the IP for using it in Cloud9, Heroku doesn't needs it
 
 //Define the array of campgrounds
-let campgrounds = [
-    {name: "Delta Old Growth", image: "https://assets.simpleviewinc.com/simpleview/image/fetch/c_fill,h_452,q_75,w_982/http://res.cloudinary.com/simpleview/image/upload/v1469218578/clients/lanecounty/constitution_grove_campground_by_natalie_inouye_417476ef-05c3-464d-99bd-032bb0ee0bd5.png"},
-    {name: "Big Meadows", image: "http://seattlemag.com/sites/default/files/field/image/1-lead_23.jpg"},
-    {name: "Mount Desert", image: "https://acadiamagic.com/280x187/md-campground.jpg"},
-    {name: "New KOA", image: "https://koa.com/blog/images/Lake-milton-koa.jpg?preset=blogPhoto"},
-    {name: "Helen, GA", image: "http://helenga.s3.amazonaws.com/images/weddings/_750x550_crop_center-center_75_none/lucilles.jpg"},
-    {name: "West Thompson Lake", image: "https://blog-assets.thedyrt.com/uploads/2018/10/connecticut-west-thompson-lake-campground_f94e0d004899b303ea1ca3fb2ba03dfb.jpg"}
-];
+// let campgrounds = [
+//     {name: "Delta Old Growth", image: "https://assets.simpleviewinc.com/simpleview/image/fetch/c_fill,h_452,q_75,w_982/http://res.cloudinary.com/simpleview/image/upload/v1469218578/clients/lanecounty/constitution_grove_campground_by_natalie_inouye_417476ef-05c3-464d-99bd-032bb0ee0bd5.png"},
+//     {name: "Big Meadows", image: "http://seattlemag.com/sites/default/files/field/image/1-lead_23.jpg"},
+//     {name: "Mount Desert", image: "https://acadiamagic.com/280x187/md-campground.jpg"},
+//     {name: "New KOA", image: "https://koa.com/blog/images/Lake-milton-koa.jpg?preset=blogPhoto"},
+//     {name: "Helen, GA", image: "http://helenga.s3.amazonaws.com/images/weddings/_750x550_crop_center-center_75_none/lucilles.jpg"},
+//     {name: "West Thompson Lake", image: "https://blog-assets.thedyrt.com/uploads/2018/10/connecticut-west-thompson-lake-campground_f94e0d004899b303ea1ca3fb2ba03dfb.jpg"}
+// ];
 
 //Defining the routes
 
