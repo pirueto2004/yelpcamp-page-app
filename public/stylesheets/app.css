@@ -19,6 +19,12 @@ body {
       text-align: center;
      }
 
-  
+  .jumbotron {
+    margin-top: 5%;
+  }
+
+  .show {
+    margin-top: 3%;
+  }
 
   
