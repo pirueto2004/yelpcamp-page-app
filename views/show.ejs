@@ -12,6 +12,13 @@
                 <div class="card-footer">
                         <p class="py-3"><%= campground.description %></p>
                 </div>
+                <div class="card-text p-4">
+                    <% campground.comments.forEach(function(comment){ %>
+                        <p>
+                            <strong><%= comment.author %></strong> - <%= comment.text %>
+                        </p>
+                    <% }) %> 
+                </div>
                 
             </div>
             

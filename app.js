@@ -7,6 +7,7 @@ const express = require('express'),
 
 //Require models      
 const Campground = require("./models/campground"),
+      Comment = require("./models/comment"),
       seedDB = require("./seeds");      
  
 //Initialize database with new seeds
@@ -20,19 +21,6 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
 // mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
 mongoose.connect(dbUrl, { useNewUrlParser: true });
-
-// Campground.create(
-//     {
-//         name: "Delta Old Growth", 
-//         image: "https://assets.simpleviewinc.com/simpleview/image/fetch/c_fill,h_452,q_75,w_982/http://res.cloudinary.com/simpleview/image/upload/v1469218578/clients/lanecounty/constitution_grove_campground_by_natalie_inouye_417476ef-05c3-464d-99bd-032bb0ee0bd5.png",
-//         description: "This easy 0.5 mile (0,8 km) wheelchair accessible loop trail winds through a diverse, ancient and beautiful forest ecosystem where 650 year old trees tower over 200 feet (61 m) above a variety of native plants and animals. "
-// }, function(err, campground){
-//     if(err){
-//         console.log(err);
-//     } else {
-//         console.log("NEWLY CREATED CAMPGROUND: ", campground);
-//     }
-// });
 
 //Tell Express to use 'body-parser'
 app.use(bodyParser.urlencoded({extended: true}));
@@ -118,10 +106,11 @@ app.get("/campgrounds/new", function(req, res) {
 
 app.get("/campgrounds/:id", function(req, res){
     //find the campground with provided ID
-    Campground.findById(req.params.id, function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err) {
             console.log(err);
         } else {
+            console.log(foundCampground);
             //render show template with that campground
             res.render("show", {campground: foundCampground});
         }
