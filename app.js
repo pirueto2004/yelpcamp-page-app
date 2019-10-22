@@ -32,16 +32,6 @@ app.set("view engine", "ejs");//Setting the default extension file '.ejs' for al
 const PORT = process.env.PORT || 3000;
 // var IP = process.env.IP || '192.168.0.1'; set the IP for using it in Cloud9, Heroku doesn't needs it
 
-//Define the array of campgrounds
-// let campgrounds = [
-//     {name: "Delta Old Growth", image: "https://assets.simpleviewinc.com/simpleview/image/fetch/c_fill,h_452,q_75,w_982/http://res.cloudinary.com/simpleview/image/upload/v1469218578/clients/lanecounty/constitution_grove_campground_by_natalie_inouye_417476ef-05c3-464d-99bd-032bb0ee0bd5.png"},
-//     {name: "Big Meadows", image: "http://seattlemag.com/sites/default/files/field/image/1-lead_23.jpg"},
-//     {name: "Mount Desert", image: "https://acadiamagic.com/280x187/md-campground.jpg"},
-//     {name: "New KOA", image: "https://koa.com/blog/images/Lake-milton-koa.jpg?preset=blogPhoto"},
-//     {name: "Helen, GA", image: "http://helenga.s3.amazonaws.com/images/weddings/_750x550_crop_center-center_75_none/lucilles.jpg"},
-//     {name: "West Thompson Lake", image: "https://blog-assets.thedyrt.com/uploads/2018/10/connecticut-west-thompson-lake-campground_f94e0d004899b303ea1ca3fb2ba03dfb.jpg"}
-// ];
-
 //Defining the routes
 
 //"/" => "The Landing Page"
@@ -60,7 +50,7 @@ app.get("/campgrounds", function(req, res) {
             console.log(err);
         } else {
             //Here we render the page
-            res.render("index", {campgroundsData: allCampgrounds});
+            res.render("campgrounds/index", {campgroundsData: allCampgrounds});
         }
     })
 });
@@ -99,7 +89,7 @@ app.post("/campgrounds", function(req, res){
 //"/campgrounds/new" => "The Form Page"
 app.get("/campgrounds/new", function(req, res) {
     //Here we render the page
-    res.render("new");
+    res.render("campgrounds/new");
 });
 
 //SHOW ROUTE - shows info about one single campground
@@ -112,12 +102,57 @@ app.get("/campgrounds/:id", function(req, res){
         } else {
             console.log(foundCampground);
             //render show template with that campground
-            res.render("show", {campground: foundCampground});
+            res.render("campgrounds/show", {campground: foundCampground});
         }
     });
-})
+});
 
+// ======================================
+//           COMMENTS ROUTES
+// ======================================
 
+app.get("/campgrounds/:id/comments/new", function(req, res){
+    // res.send("THIS WILL BE THE COMMENT FORM");
+    //find campground by Id
+    Campground.findById(req.params.id, function(err, campground){
+        if(err){
+            console.log(err);
+        } else {
+            //render and pass in the campground coming out from the database
+            res.render("comments/new", {campground: campground});
+        }
+    });
+});
+
+//Set up the POST route to submit the comments
+app.post("/campgrounds/:id/comments", function(req, res){
+    //look up campground using Id  
+    Campground.findById(req.params.id, function(err, campground){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds");
+        } else {
+            //we can use just one piece of data req.body.comment since we use name=comment[text] and name=comment[author] in the form
+            // console.log(req.body.comment);
+            //create new comment
+            Comment.create(req.body.comment, function(err, comment){
+                if(err){
+                    console.log(err);
+                    res.redirect("/campgrounds");
+                } else {
+                    //associate the comment to the campground
+                    campground.comments.push(comment);
+                    campground.save();
+                    res.redirect('/campgrounds/' + campground._id);
+                }
+            });
+        }
+    });
+    
+    
+    //redirect to campground show page
+
+});
 
 //Tell Express to listen for requests (start server)
 //when using an IP

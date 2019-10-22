@@ -1,4 +1,4 @@
-<% include ./partials/header %>
+<% include ../partials/header %>
 
 <div class="container show">
     <div class="row justify-content-center ">
@@ -12,6 +12,9 @@
                 <div class="card-footer">
                         <p class="py-3"><%= campground.description %></p>
                 </div>
+                <p>
+                    <a></a>
+                </p>
                 <div class="card-text p-4">
                     <% campground.comments.forEach(function(comment){ %>
                         <p>
@@ -28,4 +31,4 @@
 </div>
 
 
-<% include ./partials/footer %>
+<% include ../partials/footer %>
