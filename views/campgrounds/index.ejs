@@ -24,13 +24,13 @@
         <div class="row text-center" style="display: flex; flex-wrap: wrap;">
             <% campgroundsData.forEach(function(campground){ %>
                 <div class="col-12 col-lg-4 mt-4">
-                    <div class="img-thumbnail">
-                       <img src="<%= campground.image %>"  class="img-fluid" width="500">
+                    <div class="img-thumbnail m-0 p-0 border-0">
+                       <img src="<%= campground.image %>"  class="img-fluid" >
                        <div class="caption">
                             <h6><%= campground.name %></h6>
                        </div>
                        <p>
-                          <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>
+                          <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary my-2">More Info</a>
                        </p>
                     </div>
                 </div>

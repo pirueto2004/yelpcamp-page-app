@@ -11,12 +11,11 @@
             </div>
         </div>
         <div class="col-12 col-lg-9 mt-4">
-            <div class="card my-4">
-                <div class="card-body">
-                        
-                        <img src="<%= campground.image %>" class="img-fluid" width="100%">
+            <div class="card my-4 border-0">
+                <div class="card-body p-0">
+                        <img src="<%= campground.image %>" class="img-fluid">
                 </div>
-                <div class="caption p-3">
+                <div class="caption p-3 mb-2">
                     <h4 class="float-right">$9.99/night</h4>
                     <h4 class="float-left"><a href=""><%= campground.name %></a></h4>
                 </div>
@@ -27,7 +26,7 @@
                 
             </div>
 
-            <div class="card p-3 mb-4" style="background-color: gainsboro;">
+            <div class="card p-3 mb-4 border-0" style="background-color: gainsboro;">
                 <div class="text-right"><a class="btn btn-success ml-4 my-2" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a></div>
                 <hr>
                 <% campground.comments.forEach(function(comment){ %>

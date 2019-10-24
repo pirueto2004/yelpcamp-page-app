@@ -12,7 +12,11 @@ body {
     position:relative; /*REQUIRED Sets up positioning for your footer*/
   }
 
-  .centered {
+  .card-body img, .img-thumbnail img {
+    width: 100%;
+   }
+
+   .centered {
       padding: 10px;
       background: #f9faf8;
       margin: 20% auto; 
