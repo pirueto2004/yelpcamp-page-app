@@ -1,36 +1,59 @@
-const express = require('express'),
-      app = express(), //Creates an Express application and saves it to a variable
-      bodyParser = require('body-parser'),
-      mongoose = require("mongoose"),
+const express               = require('express'),
+      expressSession        = require("express-session"),
+      bodyParser            = require('body-parser'),
+      mongoose              = require("mongoose"),
+      passport              = require("passport"),
+      localStrategy         = require("passport-local"),
+      passportLocalMongoose = require("passport-local-mongoose"),
       DATABASE_NAME = 'yelp_camp',
       mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`;
 
-//Require models      
+      //Creates an Express application and saves it to a variable
+const app = express();
+
+      //Require models      
 const Campground = require("./models/campground"),
-      Comment = require("./models/comment"),
-      seedDB = require("./seeds");      
- 
-//Initialize database with new seeds
-seedDB();
-
-//Set up promises with mongoose
-mongoose.Promise = Promise; 
-
-//if there's a shell environment variable named MONGODB_URI (deployed), use it; otherwise, connect to localhost
-const dbUrl = process.env.MONGODB_URI || mongoURI;
-
-// mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
-mongoose.connect(dbUrl, { useNewUrlParser: true });
-
-//Tell Express to use 'body-parser'
-app.use(bodyParser.urlencoded({extended: true}));
-
-app.use(express.static(__dirname + '/public'));
-
-app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
+      Comment    = require("./models/comment"),
+      User       = require("./models/user"),  
+      seedDB = require("./seeds");  
 
 const PORT = process.env.PORT || 3000;
-// var IP = process.env.IP || '192.168.0.1'; set the IP for using it in Cloud9, Heroku doesn't needs it
+const IP = process.env.IP; //set the IP for using it in Cloud9, Heroku doesn't needs it    
+
+    //Initialize database with new seeds
+    seedDB();
+
+    //PASSPORT CONFIGURATION
+
+    app.use(expressSession({
+        secret: "floppy is the sweetest dog in the world",
+        resave: false,
+        saveUninitialized: false
+    }));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    passport.use(new localStrategy(User.authenticate()));
+    //encode and decode sessions
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+
+    //Set up promises with mongoose
+    mongoose.Promise = Promise; 
+
+    //if there's a shell environment variable named MONGODB_URI (deployed), use it; otherwise, connect to localhost
+const dbUrl = process.env.MONGODB_URI || mongoURI;
+
+    // mongoose.connect(MONGOLAB_URI || mongoURI, { useNewUrlParser: true });
+    mongoose.connect(dbUrl, { useNewUrlParser: true });
+
+    //Tell Express to use 'body-parser'
+    app.use(bodyParser.urlencoded({extended: true}));
+
+    app.use(express.static(__dirname + '/public'));
+
+    app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
 
 //Defining the routes
 
@@ -155,8 +178,6 @@ app.post("/campgrounds/:id/comments", function(req, res){
 });
 
 //Tell Express to listen for requests (start server)
-//when using an IP
-// app.listen(PORT, IP);
-app.listen(PORT, function(){
-    console.log("The YelpCamp App Server listening on PORT " + PORT);
+app.listen(PORT, IP, function(){
+    console.log("Server listening on PORT " + PORT);
 });
