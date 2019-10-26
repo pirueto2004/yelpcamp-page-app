@@ -55,7 +55,9 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
     app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
 
-//Defining the routes
+//====================
+//       ROUTES
+//====================
 
 //"/" => "The Landing Page"
 app.get("/", function(req, res) {
@@ -161,6 +163,7 @@ app.post("/campgrounds/:id/comments", function(req, res){
             Comment.create(req.body.comment, function(err, comment){
                 if(err){
                     console.log(err);
+                    //redirect to show page
                     res.redirect("/campgrounds");
                 } else {
                     //associate the comment to the campground
@@ -171,10 +174,41 @@ app.post("/campgrounds/:id/comments", function(req, res){
             });
         }
     });
-    
-    
-    //redirect to campground show page
+});
 
+// ====================
+//     AUTH ROUTES
+// ====================
+
+//show the register fomr
+app.get("/register", function(req, res){
+    res.render("register");
+});
+
+//handle sign up logic
+app.post("/register", function(req, res){
+    // res.send("Signing you up ...");
+    const newUser = new User({username: req.body.username});
+    const userPassword = req.body.password;
+    User.register(newUser, userPassword, function(err, user){
+        if(err){
+            console.log(err);
+            return res.render("register");
+        }
+        passport.authenticate("local")(req, res, function(){
+            res.redirect("/campgrounds");
+        })
+    });
+});
+
+//show login form
+app.get("/login", function(req, res){
+    res.render("login");
+});
+
+//handling login logic
+app.post("/login", function(req, res){
+    res.send("LOGIN LOGIC HAPPENS HERE!");
 });
 
 //Tell Express to listen for requests (start server)
