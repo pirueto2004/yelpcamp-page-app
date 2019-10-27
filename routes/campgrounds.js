@@ -23,17 +23,23 @@ router.get("/", function(req, res) {
 //CREATE ROUTE - add new campground to DB
 
 //POST route by using the same GET route following the REST convention
-router.post("/", function(req, res){
+router.post("/", isLoggedIn, function(req, res){
     // res.send("YOU HIT THE POST ROUTE!")
     //Get data from form and add to campgrounds array
-    let campgroundName = req.body.name;
-    let campgroundImage = req.body.image;
-    let campgroundDescription = req.body.description;
-    let newCampground = {
+    const campgroundName = req.body.name;
+    const campgroundImage = req.body.image;
+    const campgroundDescription = req.body.description;
+    const author = {
+        id: req.user._id,
+        username: req.user.username
+    }
+    const newCampground = {
         name: campgroundName,
         image: campgroundImage,
-        description: campgroundDescription
+        description: campgroundDescription,
+        author: author
     };
+    
     // campgrounds.push(newCampground);
 
     //Create a new campground and save to DB
@@ -41,6 +47,7 @@ router.post("/", function(req, res){
         if(err){
             console.log(err);
         } else {
+            console.log(newlyCreated);
             //Redirect back to campgrounds page
             res.redirect("/campgrounds");
         }
@@ -51,7 +58,7 @@ router.post("/", function(req, res){
 //NEW ROUTE - show form to create a new campaground
 
 //"/campgrounds/new" => "The Form Page"
-router.get("/new", function(req, res) {
+router.get("/new", isLoggedIn, function(req, res) {
     //Here we render the page
     res.render("campgrounds/new");
 });
@@ -70,5 +77,13 @@ router.get("/:id", function(req, res){
         }
     });
 });
+
+//Middleware
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 module.exports = router;

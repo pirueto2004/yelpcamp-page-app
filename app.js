@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3000;
 const IP = process.env.IP; //set the IP for using it in Cloud9, Heroku doesn't needs it    
 
     //Initialize database with new seeds
-    seedDB();
+    // seedDB();
 
     //PASSPORT CONFIGURATION
 
