@@ -15,15 +15,23 @@
 
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                <a class="nav-link" href="/">Login<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="/">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="/">Logout</a>
-                </li>        
+                <!-- if no user show login/sign up links-->
+                <% if(!currentUser) { %>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/login">Login<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Sign Up</a>
+                    </li>
+                <% }else { %>
+                    <!-- else show current user logged in and logout link-->
+                    <li class="nav-item text-white">
+                        <span class="nav-link" >Signed In As <span class="btn btn-sm btn-info text-capitalize"><%= currentUser.username %></span></span>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>   
+               <% } %>
             </ul>    
         </div>
     </nav>

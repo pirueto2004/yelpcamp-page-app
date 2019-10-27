@@ -53,6 +53,11 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
     app.use(express.static(__dirname + '/public'));
 
+    app.use(function(req, res, next){
+        res.locals.currentUser = req.user;
+        next();
+    });
+
     app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
 
 //====================
@@ -69,13 +74,14 @@ app.get("/", function(req, res) {
 
 //"/campgrounds" => "The Campgrounds Page"
 app.get("/campgrounds", function(req, res) {
+    // const currentUser = req.user;
     //Get all campgrounds from DB
     Campground.find({}, function(err, allCampgrounds){
         if(err){
             console.log(err);
         } else {
             //Here we render the page
-            res.render("campgrounds/index", {campgroundsData: allCampgrounds});
+            res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
         }
     })
 });
@@ -136,7 +142,7 @@ app.get("/campgrounds/:id", function(req, res){
 //           COMMENTS ROUTES
 // ======================================
 
-app.get("/campgrounds/:id/comments/new", function(req, res){
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res){
     // res.send("THIS WILL BE THE COMMENT FORM");
     //find campground by Id
     Campground.findById(req.params.id, function(err, campground){
@@ -150,7 +156,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
 });
 
 //Set up the POST route to submit the comments
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
     //look up campground using Id  
     Campground.findById(req.params.id, function(err, campground){
         if(err){
@@ -207,9 +213,28 @@ app.get("/login", function(req, res){
 });
 
 //handling login logic
-app.post("/login", function(req, res){
-    res.send("LOGIN LOGIC HAPPENS HERE!");
+app.post("/login", passport.authenticate("local", 
+    {
+        successRedirect: "/campgrounds",
+        failureRedirect: "/login"
+    }), function(req, res){
+    // res.send("LOGIN LOGIC HAPPENS HERE!");
 });
+
+//LOGOUT ROUTE
+
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/login");
+});
+
+//middleware
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 //Tell Express to listen for requests (start server)
 app.listen(PORT, IP, function(){
