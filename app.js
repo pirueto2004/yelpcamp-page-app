@@ -5,8 +5,9 @@ const express               = require('express'),
       passport              = require("passport"),
       localStrategy         = require("passport-local"),
       passportLocalMongoose = require("passport-local-mongoose"),
-      DATABASE_NAME = 'yelp_camp',
-      mongoURI = `mongodb://localhost:27017/${DATABASE_NAME}`;
+      methodOverride        = require("method-override"),
+      DATABASE_NAME         = 'yelp_camp',
+      mongoURI              = `mongodb://localhost:27017/${DATABASE_NAME}`;
 
       //Creates an Express application and saves it to a variable
 const app = express();
@@ -61,6 +62,8 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
         res.locals.currentUser = req.user;
         next();
     });
+
+    app.use(methodOverride("_method"));
 
     app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
 
