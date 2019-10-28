@@ -79,18 +79,14 @@ router.get("/:id", function(req, res){
 });
 
 //EDIT CAMPGROUND ROUTE
-router.get("/:id/edit", isLoggedIn, function(req, res){
+router.get("/:id/edit", checkCampgroundOwnership, function(req, res){
     Campground.findById(req.params.id, function(err, foundCampground){
-        if(err) {
-            res.redirect("/campgrounds");
-        } else {
-            res.render("campgrounds/edit", {campground: foundCampground});
-        }
+        res.render("campgrounds/edit", {campground: foundCampground});
     });
 });
 
 //UPDATE CAMPGROUND ROUTE
-router.put("/:id", isLoggedIn, function(req, res){
+router.put("/:id", checkCampgroundOwnership, function(req, res){
     //find and update the correct campground
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
         if(err) {
@@ -104,7 +100,7 @@ router.put("/:id", isLoggedIn, function(req, res){
 });
 
 //DESTROY CAMPGROUND ROUTE
-router.delete("/:id", function(req, res){
+router.delete("/:id", checkCampgroundOwnership, function(req, res){
     // res.send("YOU ARE TRYING TO DELETE A CAMPGROUND!");
     Campground.findByIdAndRemove(req.params.id, function(err){
         if(err) {
@@ -115,12 +111,39 @@ router.delete("/:id", function(req, res){
     });
 });
 
-//Middleware
+//Middlewares
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()) {
         return next();
     }
     res.redirect("/login");
+}
+
+function checkCampgroundOwnership(req, res, next) {
+    //is user logged in?
+    if(req.isAuthenticated()){
+        Campground.findById(req.params.id, function(err, foundCampground){
+            if(err) {
+                res.redirect("back");
+            } else {
+                //does user own the campground post?
+                console.log(foundCampground.author.id);//this a mongoose object
+                console.log(req.user._id);//this a string
+                if(foundCampground.author.id.equals(req.user._id)){
+                    // res.render("campgrounds/edit", {campground: foundCampground});
+                    next();
+                } else {
+                    // res.send("YOU DO NOT HAVE PERMISSION TO DO THAT!");
+                    res.redirect("back");
+                }
+            }
+        });
+    }else {
+        //if not, redirect
+        // console.log("YOU NEED TO BE LOGGED IN TO DO THAT");
+        // res.send("YOU NEED TO BE LOGGED IN TO DO THAT");
+        res.redirect("back");
+    }
 }
 
 module.exports = router;
