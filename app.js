@@ -1,7 +1,8 @@
-const express               = require('express'),
+const express               = require("express"),
       expressSession        = require("express-session"),
-      bodyParser            = require('body-parser'),
+      bodyParser            = require("body-parser"),
       mongoose              = require("mongoose"),
+      flash                 = require("connect-flash"),
       passport              = require("passport"),
       localStrategy         = require("passport-local"),
       passportLocalMongoose = require("passport-local-mongoose"),
@@ -27,6 +28,9 @@ const IP = process.env.IP; //set the IP for using it in Cloud9, Heroku doesn't n
 
     //Initialize database with new seeds
     // seedDB();
+
+    //Use Flash Messages in the app
+    app.use(flash());
 
     //PASSPORT CONFIGURATION
 
@@ -60,12 +64,16 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
     app.use(function(req, res, next){
         res.locals.currentUser = req.user;
+        res.locals.error = req.flash("error");
+        res.locals.success = req.flash("success");
         next();
     });
 
     app.use(methodOverride("_method"));
 
     app.set("view engine", "ejs");//Setting the default extension file '.ejs' for all the files that contain the HTML
+
+    
 
     //Use the routes
     app.use("/", indexRoutes);

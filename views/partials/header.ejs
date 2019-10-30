@@ -7,7 +7,7 @@
     </head>
     <body >
 
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top " style="background-color: #2b2e30;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top " >
         <a class="navbar-brand" href="/">YelpCamp</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -35,3 +35,18 @@
             </ul>    
         </div>
     </nav>
+
+    <div class="container">
+        <% if(error && error.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+        
+        <% if(success && success.length > 0) { %>
+            <div class="alert alert-success" role="alert">
+                <%= success %>
+            </div>
+        <% } %>
+    </div>
+    

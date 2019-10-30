@@ -8,7 +8,8 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next) {
     //is user logged in?
     if(req.isAuthenticated()){
         Campground.findById(req.params.id, function(err, foundCampground){
-            if(err) {
+            if(err || !foundCampground) {
+                req.flash("error", "Campground not found!");
                 res.redirect("back");
             } else {
                 //does user own the campground post?
@@ -19,6 +20,7 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next) {
                     next();
                 } else {
                     // res.send("YOU DO NOT HAVE PERMISSION TO DO THAT!");
+                    req.flash("error", "You do not have permission to do that!");
                     res.redirect("back");
                 }
             }
@@ -27,6 +29,7 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next) {
         //if not, redirect
         // console.log("YOU NEED TO BE LOGGED IN TO DO THAT");
         // res.send("YOU NEED TO BE LOGGED IN TO DO THAT");
+        req.flash("error", "You need to be logged in to do that!");
         res.redirect("back");
     }
 };
@@ -35,7 +38,8 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
     //is user logged in?
     if(req.isAuthenticated()){
         Comment.findById(req.params.comment_id, function(err, foundComment){
-            if(err) {
+            if(err || !foundComment) {
+                req.flash("error","Comment not found!");
                 res.redirect("back");
             } else {
                 //does user own the comment?
@@ -46,6 +50,7 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
                     next();
                 } else {
                     // res.send("YOU DO NOT HAVE PERMISSION TO DO THAT!");
+                    req.flash("error","You do not have permission to do that!");
                     res.redirect("back");
                 }
             }
@@ -54,6 +59,7 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
         //if not, redirect
         // console.log("YOU NEED TO BE LOGGED IN TO DO THAT");
         // res.send("YOU NEED TO BE LOGGED IN TO DO THAT");
+        req.flash("error","You need to be logged in to do that!");
         res.redirect("back");
     }
 };
@@ -62,6 +68,7 @@ middlewareObj.isLoggedIn = function(req, res, next){
     if(req.isAuthenticated()) {
         return next();
     }
+    req.flash("error", "You need to be logged in to do that!");
     res.redirect("/login");
 };
 
