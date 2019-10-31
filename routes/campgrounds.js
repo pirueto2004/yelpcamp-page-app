@@ -29,6 +29,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     // res.send("YOU HIT THE POST ROUTE!")
     //Get data from form and add to campgrounds array
     const campgroundName = req.body.name;
+    const campgroundPrice = req.body.price;
     const campgroundImage = req.body.image;
     const campgroundDescription = req.body.description;
     const author = {
@@ -37,6 +38,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     }
     const newCampground = {
         name: campgroundName,
+        price: campgroundPrice,
         image: campgroundImage,
         description: campgroundDescription,
         author: author
