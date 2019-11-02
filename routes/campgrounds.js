@@ -5,20 +5,36 @@ const express = require("express"),
 const Campground = require("../models/campground"),
       middleware = require("../middleware");
 
+
 //INDEX ROUTE - show all campgrounds
 
 //"/campgrounds" => "The Campgrounds Page"
 router.get("/", function(req, res) {
+    // eval(require('locus'));
     // const currentUser = req.user;
-    //Get all campgrounds from DB
-    Campground.find({}, function(err, allCampgrounds){
-        if(err){
-            console.log(err);
-        } else {
-            //Here we render the page
-            res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
-        }
-    })
+    if(req.query.search){
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        //Get requested campground from DB
+        Campground.find({name: regex}, function(err, allCampgrounds){
+            if(err){
+                console.log(err);
+            } else {
+                //Here we render the page
+                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
+            }
+        });
+    } else {
+        //Get all campgrounds from DB
+        Campground.find({}, function(err, allCampgrounds){
+            if(err){
+                console.log(err);
+            } else {
+                //Here we render the page
+                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
+            }
+        });
+    }
+    
 });
 
 
@@ -115,5 +131,10 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res){
         }
     });
 });
+
+// Define escapeRegex function for search feature
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};      
 
 module.exports = router;

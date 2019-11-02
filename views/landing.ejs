@@ -7,13 +7,23 @@
     </head>
     <body >
 
-        <div class="container">
-            <div class="row">
-                <div id="landing-header" class="col-12">
-                
+        <div id="landing-header" class="container">
+            <div  class="row">
+                <div  class="col-12">
                     <h1 class="p-4 font-weight-bold text-white">Welcome to YelpCamp!</h1>
-
                     <a class="btn btn-primary btn-lg" href="/campgrounds">View All Campgrounds</a>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-12 d-flex justify-content-center my-4">
+                    <form action="/campgrounds" method="GET" class="form-inline" id="campground-search">
+                        <div class="form-row">
+                            <div class="form-group ">
+                                <input type="text" name="search" placeholder="Campground search..." class="form-control">
+                                <input type="submit" value="Search" class="btn btn-info mx-2">
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
