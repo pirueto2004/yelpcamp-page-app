@@ -13,12 +13,18 @@ router.get("/", function(req, res) {
     // eval(require('locus'));
     // const currentUser = req.user;
     if(req.query.search){
+        
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         //Get requested campground from DB
         Campground.find({name: regex}, function(err, allCampgrounds){
             if(err){
                 console.log(err);
+            }
+            if(!allCampgrounds.length){
+                    req.flash("error","No campground found!");
+                    return res.redirect("back");
             } else {
+                
                 //Here we render the page
                 res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
             }
@@ -29,6 +35,7 @@ router.get("/", function(req, res) {
             if(err){
                 console.log(err);
             } else {
+                console.log(allCampgrounds);
                 //Here we render the page
                 res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
             }
@@ -91,6 +98,7 @@ router.get("/:id", function(req, res){
         if(err || !foundCampground) {
             req.flash("error", "Campground not found!");
             res.redirect("back");
+            
         } else {
             console.log(foundCampground);
             //render show template with that campground
