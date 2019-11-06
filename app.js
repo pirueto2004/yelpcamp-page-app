@@ -29,6 +29,9 @@ const IP = process.env.IP; //set the IP for using it in Cloud9, Heroku doesn't n
     //Initialize database with new seeds
     // seedDB();
 
+    //Require moment.js and add it to app.locals
+    app.locals.moment = require('moment');
+
     //Use Flash Messages in the app
     app.use(flash());
 
