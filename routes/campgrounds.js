@@ -154,6 +154,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
             if(err) {
                 res.reditect("/campgrounds");
             } else {
+                req.flash("success","Successfully updated!");
                 //redirect somewhere(show page)
                 res.redirect("/campgrounds/" + updatedCampground._id);
             }
