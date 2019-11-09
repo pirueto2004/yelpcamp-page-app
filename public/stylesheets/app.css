@@ -117,3 +117,9 @@ body {
 .no-cssanimations .slideshow li {
 	opacity: 1;
 }
+
+/* Google maps */
+#map {
+  width: 100%;
+  height: 400px;
+}
