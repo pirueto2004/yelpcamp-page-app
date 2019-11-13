@@ -36,7 +36,7 @@ router.get("/", function(req, res) {
             } else {
                 
                 //Here we render the page
-                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
+                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user, page: 'campgrounds'});
             }
         });
     } else {
@@ -152,7 +152,9 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
         //find and update the correct campground
         Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
             if(err) {
-                res.reditect("/campgrounds");
+                req.flash("error", err.message);
+                res.redirect("back");
+                // res.reditect("/campgrounds");
             } else {
                 req.flash("success","Successfully updated!");
                 //redirect somewhere(show page)
@@ -169,6 +171,7 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res){
         if(err) {
             res.redirect("/campgrounds");
         } else {
+            req.flash("success","Campground deleted!");
             res.redirect("/campgrounds");
         }
     });

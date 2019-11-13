@@ -1,6 +1,6 @@
 <% include ../partials/header %>
 
-<div class="container show">
+<div class="container show mb-4">
     <div class="row justify-content-center ">
         <div class="col-12 col-lg-3">
             <p class="lead">YelpCamp</p>
@@ -25,11 +25,11 @@
                         <p><%= campground.description %></p>
                 </div>
                 <div class="card-text px-3 mb-1">
-                        <p><em>Submitted By <%= campground.author.username %>, <%= moment(campground.createdAt).fromNow() %></em></p>
+                        <p><em>Submitted By <a href="/users/<%=campground.author.id%>"><%= campground.author.username %></a>, <%= moment(campground.createdAt).fromNow() %></em></p>
                 </div>
                 
                 <div class="p-3 ">
-                    <% if(currentUser && campground.author.id.equals(currentUser._id)) { %>
+                    <% if(currentUser && campground.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin) { %>
                         <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-sm btn-warning"> Edit </a>
                 
                         <form class="d-inline px-2" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
@@ -50,7 +50,7 @@
                             <strong><%= comment.author.username %></strong>
                             <span class="float-right"><%= moment(comment.createdAt).fromNow() %></span>
                             <p><%= comment.text %></p>
-                            <% if(currentUser && comment.author.id.equals(currentUser._id)) { %>
+                            <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin) { %>
                                 <a class="btn btn-sm btn-warning" 
                                     href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">
                                     Edit
@@ -58,10 +58,12 @@
                                 <form class="d-inline px-2" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-sm btn-danger" >Delete</button>
                                 </form>
+                                
                             <% } %>
                         </div>
-                        
+                       
                     </div>
+                    <hr>  
                 <% }) %> 
             </div>
             

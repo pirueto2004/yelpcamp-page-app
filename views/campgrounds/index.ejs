@@ -1,29 +1,57 @@
 <% include ../partials/header %>
     
+    
 
-
-    <div class="container ">
+    <div class="container pb-4">
+        <div class="row mt-4">
+            <div class="col-12">
+                    <% if(currentUser && currentUser.isAdmin) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                You're an admin!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                    <% } %>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12 ">
                 <header class="jumbotron text-center ">
                     <div class="container">
-                        <h1>Welcome To YelpCamp!</h1>
-                        <p>View our hand-picked campgrounds from all over the world</p>
-                        <p>
-                            <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add New Campground</a>
-                        </p>
+                        <h1>Our Most Popular Campgrounds</h1>
+                        <!-- <p>View our hand-picked campgrounds from all over the world</p> -->
+                        <div class="row my-4 d-flex justify-content-center">
+                                <div class="d-inline pt-4">
+                                        <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add New Campground</a>
+                                </div>
+                                <div class="d-inline pt-4 ml-4">
+                                        <div class="col-6 ">
+                                            <form action="/campgrounds" method="GET" class="form-inline" id="campground-search">
+                                                <div class="form-row">
+                                                    <div class="form-group ">
+                                                        <input type="text" name="search" placeholder="Campground search..." class="form-control">
+                                                        <input type="submit" value="Search" class="btn btn-info mx-2">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                </div>
+                                
+                        </div>
+                        
                         
                     </div>
                 </header>
             </div>
         </div>
-        <div class="row px-3">
+        <!-- <div class="row px-3">
             <div class="col-12 bg-light mb-2">
                 <h3>Our Most Popular Campgrounds!</h3>
             </div>
-        </div>
+        </div> -->
 
-        <div class="row text-center" style="display: flex; flex-wrap: wrap;">
+        <div class="row text-center mb-4" style="display: flex; flex-wrap: wrap;">
             <% campgroundsData.forEach(function(campground){ %>
                 <div class="col-12 col-lg-4 mt-4">
                     <div class="img-thumbnail m-0 p-0 border-0">

@@ -12,6 +12,55 @@ body {
     position:relative; /*REQUIRED Sets up positioning for your footer*/
   }
 
+  
+
+  .navbar-nav li a {
+    color: white !important;
+    
+  }
+
+  .navbar-nav li a:active {
+    background-color: grey !important;
+  }
+
+  .profile-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    font-family: arial;
+  }
+
+  .profile-title {
+    color: grey;
+    font-size: 18px;
+  }
+
+  .profile-button {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  .profile-button:hover, a:hover {
+    opacity: 0.7;
+  }
+
+  .profile-button a {
+    text-decoration: none;
+    font-size: 22px;
+    color: black;
+  }
+  
+
   .card-body img, .img-thumbnail img {
     width: 100%;
    }
@@ -28,7 +77,8 @@ body {
   }
 
   .show {
-    margin-top: 3%;
+    margin-top: 50px;
+    padding-bottom: 20px;
   }
 
   .show1 {

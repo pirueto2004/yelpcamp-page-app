@@ -4,7 +4,12 @@ const mongoose               = require("mongoose"),
 //define the User model
 const userSchema = new mongoose.Schema({
     username: String,
-    password: String
+    password: String,
+    avatar: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+    isAdmin: {type: Boolean, default: false}
 });
 
 //register a plugin for userSchema that adds methods to the user

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- Make site responsive on mobile/tablet -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>YelpCamp App</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
@@ -14,21 +16,24 @@
         </button>
 
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
+            <ul class="navbar-nav ">
+                <li class="<%= typeof page !== 'undefined' && page === 'campgrounds' ? 'active' : '' %>"><a class="nav-link" href="/campgrounds">Home</a></li>
+            </ul>
             <ul class="navbar-nav ml-auto">
                 <!-- if no user show login/sign up links-->
                 <% if(!currentUser) { %>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/login">Login<span class="sr-only">(current)</span></a>
+                    <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>">
+                        <a class="nav-link" href="/login">Login</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>">
                         <a class="nav-link" href="/register">Sign Up</a>
                     </li>
                 <% }else { %>
                     <!-- else show current user logged in and logout link-->
-                    <li class="nav-item text-white">
+                    <li class="nav-item text-white ">
                         <span class="nav-link" >Signed In As <span class="btn btn-sm btn-info text-capitalize"><%= currentUser.username %></span></span>
                     </li> 
-                    <li class="nav-item">
+                    <li class="nav-item ">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>   
                <% } %>
@@ -55,4 +60,5 @@
             </div>
         <% } %>
     </div>
+    <div class="container">
     
