@@ -6,7 +6,7 @@
                     <div class="card my-4 ">
                         <div class="card-body">
                             <h1 class="card-title text-center py-2 text-dark">Edit <%= campground.name %></h1>
-                            <form action="/campgrounds/<%= campground._id %>/?_method=PUT" method="POST">
+                            <form action="/campgrounds/<%= campground._id %>/?_method=PUT" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <input class="form-control" type="text" name="campground[name]" value="<%= campground.name %>">
                                 </div>
@@ -14,7 +14,8 @@
                                     <input class="form-control" type="number" name="campground[price]" value="<%= campground.price %>" min="0.01" step="0.01">
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" type="text" name="campground[image]" value="<%= campground.image %>">
+                                    <label for="image">Image</label>
+                                    <input type="file" id="image" name="image" accept="image/*">
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" type="text" name="campground[description]" value="<%= campground.description %>">

@@ -9,7 +9,7 @@ const express               = require("express"),
       localStrategy         = require("passport-local"),
       passportLocalMongoose = require("passport-local-mongoose"),
       methodOverride        = require("method-override"),
-      DATABASE_NAME         = 'yelp_camp',
+      DATABASE_NAME         = 'yelp_camp2',
       mongoURI              = `mongodb://localhost:27017/${DATABASE_NAME}`;
 
       //Creates an Express application and saves it to a variable
