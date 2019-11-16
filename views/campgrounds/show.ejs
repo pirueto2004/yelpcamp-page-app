@@ -16,10 +16,13 @@
                 <div class="card-body p-0">
                         <img src="<%= campground.image %>" class="img-fluid">
                 </div>
-                <div class="caption p-3 mb-2">
+                <div class="caption px-3 pt-3 mb-1">
                     <h4 class="float-right">$<%= campground.price %>/night</h4>
                     <h4 class="float-left"><a href=""><%= campground.name %></a></h4>
+                    
                 </div>
+                <h6 class="text-muted px-3 mb-2"><%= campground.location %></h6>
+                   
                 
                 <div class="card-text px-3 mb-1">
                         <p><%= campground.description %></p>
