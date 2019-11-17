@@ -29,6 +29,17 @@
                         <a class="nav-link" href="/register">Sign Up</a>
                     </li>
                 <% }else { %>
+                    <li class="nav-item dropdown pb-0 my-0">
+                        <a class="nav-link" href="/campgrounds" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Notifications <span class="badge">0</span>
+                        </a>
+                        <div class="dropdown-menu mt-2 bg-info" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item text-dark" href="/campgrounds">View past notifications</a>
+                          <a class="dropdown-item text-dark" href="/campgrounds">Latest Notifications</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item text-dark" href="/campgrounds">Something else here</a>
+                        </div>
+                      </li>
                     <!-- else show current user logged in and logout link-->
                     <li class="nav-item text-white ">
                         <span class="nav-link" >Signed In As <span class="btn btn-sm btn-info text-capitalize"><%= currentUser.username %></span></span>
