@@ -2,7 +2,9 @@ const express = require("express"),
       router  = express.Router();
 
 const Campground = require("../models/campground"),
-      middleware = require("../middleware");
+      middleware = require("../middleware"),
+      Notification = require("../models/notification"),
+      User = require("../models/user");
 
 const NodeGeocoder = require("node-geocoder");
 
@@ -43,39 +45,49 @@ cloudinary.config({
 
 //"/campgrounds" => "The Campgrounds Page"
 router.get("/", function(req, res) {
+    const perPage = 8;
+    const pageQuery = parseInt(req.query.page);
+    const pageNumber = pageQuery ? pageQuery : 1;
     // eval(require('locus'));
     // const currentUser = req.user;
     if(req.query.search){
         
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         //Get requested campground from DB
-        Campground.find({name: regex}, function(err, allCampgrounds){
-            if(err){
-                console.log(err);
-            }
-            if(!allCampgrounds.length){
-                    req.flash("error","No campground found!");
-                    return res.redirect("back");
-            } else {
-                
-                //Here we render the page
-                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user, page: 'campgrounds'});
-            }
+        // Campground.find({name: regex}, function(err, allCampgrounds){
+        Campground.find({name: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
+            Campground.count({name: regex}).exec(function (err, count) {
+                if(err){
+                    console.log(err);
+                }
+                if(!allCampgrounds.length){
+                        req.flash("error","No campground found!");
+                        return res.redirect("back");
+                } else {
+                    
+                    //Here we render the page
+                    res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user, page: 'campgrounds', current: pageNumber, pages: Math.ceil(count / perPage), search: req.query.search});
+                }
+           });
         });
     } else {
         //Get all campgrounds from DB
-        Campground.find({}, function(err, allCampgrounds){
-            if(err){
-                console.log(err);
-            } else {
-                console.log(allCampgrounds);
-                //Here we render the page
-                res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user});
-            }
+        Campground.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
+        // Campground.find({}, function(err, allCampgrounds){
+            Campground.count().exec(function (err, count) {
+                if(err){
+                    console.log(err);
+                } else {
+                    console.log(allCampgrounds);
+                    //Here we render the page
+                    res.render("campgrounds/index", {campgroundsData: allCampgrounds, currentUser: req.user, current: pageNumber, pages: Math.ceil(count / perPage), search: req.query.search});
+                }
+            });
         });
     }
     
 });
+
 
 
 //CREATE ROUTE - add new campground to DB
@@ -122,6 +134,17 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, re
                         return res.redirect("back");
                     } else {
                         console.log(newlyCreated);
+                        
+                        User.findById(req.user._id).populate('followers').exec(function(err, follower){
+                            const newNotification = {
+                                username: req.user.username,
+                                campgroundId: newlyCreated.id
+                            }
+                            Notification.create(newNotification, function(err, notification){
+                                follower.notifications.push(notification);
+                                follower.save();
+                            });
+                        });
                         //Redirect back to campgrounds page
                         res.redirect("/campgrounds/" + newlyCreated.id);
                     }
@@ -152,6 +175,39 @@ router.get("/:id", function(req, res){
             //render show template with that campground
             res.render("campgrounds/show", {campground: foundCampground});
         }
+    });
+});
+
+
+
+// CAMPGROUND LIKE ROUTE
+router.post("/:id/like", middleware.isLoggedIn, function (req, res) {
+    Campground.findById(req.params.id, function (err, foundCampground) {
+        if (err) {
+            console.log(err);
+            return res.redirect("/campgrounds");
+        }
+
+        // check if req.user._id exists in foundCampground.likes
+        const foundUserLike = foundCampground.likes.some(function (like) {
+            return like.equals(req.user._id);
+        });
+
+        if (foundUserLike) {
+            // user already liked, removing like
+            foundCampground.likes.pull(req.user._id);
+        } else {
+            // adding the new user like
+            foundCampground.likes.push(req.user);
+        }
+
+        foundCampground.save(function (err) {
+            if (err) {
+                console.log(err);
+                return res.redirect("/campgrounds");
+            }
+            return res.redirect("/campgrounds/" + foundCampground._id);
+        });
     });
 });
 

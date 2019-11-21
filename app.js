@@ -67,11 +67,22 @@ const dbUrl = process.env.MONGODB_URI || mongoURI;
 
     app.use(express.static(__dirname + '/public'));
 
-    app.use(function(req, res, next){
+    app.use(async function(req, res, next){
         res.locals.currentUser = req.user;
-        res.locals.error = req.flash("error");
-        res.locals.success = req.flash("success");
-        next();
+        // res.locals.error = req.flash("error");
+        // res.locals.success = req.flash("success");
+        // next();
+        if(req.user) {
+            try {
+              let user = await User.findById(req.user._id).populate('notifications', null, { isRead: false }).exec();
+              res.locals.notifications = user.notifications.reverse();
+            } catch(err) {
+              console.log(err.message);
+            }
+           }
+           res.locals.error = req.flash("error");
+           res.locals.success = req.flash("success");
+           next();
     });
 
     app.use(methodOverride("_method"));

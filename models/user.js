@@ -9,7 +9,19 @@ const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
-    isAdmin: {type: Boolean, default: false}
+    isAdmin: {type: Boolean, default: false},
+    notifications: [
+    	{
+    	   type: mongoose.Schema.Types.ObjectId,
+    	   ref: 'Notification'
+    	}
+    ],
+    followers: [
+    	{
+    		type: mongoose.Schema.Types.ObjectId,
+    		ref: 'User'
+    	}
+    ]
 });
 
 //register a plugin for userSchema that adds methods to the user

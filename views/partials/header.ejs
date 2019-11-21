@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>YelpCamp App</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- font awesome cdn -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
     </head>
     <body >
@@ -31,13 +33,18 @@
                 <% }else { %>
                     <li class="nav-item dropdown pb-0 my-0">
                         <a class="nav-link" href="/campgrounds" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Notifications <span class="badge">0</span>
+                          Notifications <span class="badge"><%= notifications.length %></span>
                         </a>
                         <div class="dropdown-menu mt-2 bg-info" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item text-dark" href="/campgrounds">View past notifications</a>
-                          <a class="dropdown-item text-dark" href="/campgrounds">Latest Notifications</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item text-dark" href="/campgrounds">Something else here</a>
+                          <a class="dropdown-item text-dark" href="/notifications">View past notifications</a>
+                          <% notifications.forEach(function(notification) { %>                          
+                            <li>
+                                <a href="/notifications/<%= notification.id %>">
+                                    <%= notification.username %> created a new campground
+                                </a>
+                            </li>
+                          <% }); %>
+                          
                         </div>
                       </li>
                     <!-- else show current user logged in and logout link-->
