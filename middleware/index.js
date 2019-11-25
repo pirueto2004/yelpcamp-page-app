@@ -1,5 +1,6 @@
 const Campground = require("../models/campground"),
-      Comment    = require("../models/comment");
+      Comment    = require("../models/comment"),
+      User       = require("../models/user");
 
 //All the middleware goes here
 const middlewareObj = {};
@@ -16,6 +17,7 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next) {
                 console.log(foundCampground.author.id);//this a mongoose object
                 console.log(req.user._id);//this a string
                 if(foundCampground.author.id.equals(req.user._id) || req.user.isAdmin){
+                    req.campground = foundCampground;
                     // res.render("campgrounds/edit", {campground: foundCampground});
                     next();
                 } else {
@@ -46,6 +48,7 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
                 console.log(foundComment.author.id);//this a mongoose object
                 console.log(req.user._id);//this a string
                 if(foundComment.author.id.equals(req.user._id) || req.user.isAdmin){
+                    req.comment = foundComment;
                     // res.render("campgrounds/edit", {campground: foundCampground});
                     next();
                 } else {
@@ -62,6 +65,21 @@ middlewareObj.checkCommentOwnership = function(req, res, next) {
         req.flash("error","You need to be logged in to do that!");
         res.redirect("back");
     }
+};
+
+middlewareObj.checkProfileOwnership = function(req, res, next) {
+    User.findById(req.params.user_id, function(err, foundUser) {
+      if (err || !foundUser) {
+        req.flash("error", "Sorry, that user doesn't exist");
+        res.redirect("/campgrounds");
+      } else if (foundUser._id.equals(req.user._id) || req.user.isAdmin) {
+        req.user = foundUser;
+        next();
+      } else {
+        req.flash("error", "You don't have permission to do that!");
+        res.redirect("/campgrounds/" + req.params.user_id);
+      }
+    });
 };
 
 middlewareObj.isLoggedIn = function(req, res, next){

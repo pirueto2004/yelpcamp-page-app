@@ -5,10 +5,12 @@ const mongoose               = require("mongoose"),
 const userSchema = new mongoose.Schema({
     username: String,
     password: String,
-    avatar: String,
     firstName: String,
     lastName: String,
     email: String,
+    image: String,
+    imageId: String,
+    joined: { type: Date, default: Date.now },
     isAdmin: {type: Boolean, default: false},
     notifications: [
     	{

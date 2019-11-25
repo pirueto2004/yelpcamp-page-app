@@ -5,8 +5,32 @@ const express  = require("express"),
 
 const User       = require("../models/user"),
       Campground = require("../models/campground"),
+      Comment = require("../models/comment"),
       Notification = require("../models/notification");
 
+//Add multer and cloudinary configuration
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+const imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+const upload = multer({ storage: storage, fileFilter: imageFilter})
+
+const cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'deoettl1w', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 //====================
 //       ROUTES
@@ -27,30 +51,70 @@ router.get("/register", function(req, res){
 });
 
 //handle sign up logic
-router.post("/register", function(req, res){
+router.post("/register", upload.single("image"),function(req, res){
     // res.send("Signing you up ...");
-    const newUser = new User({
-        username: req.body.username, 
-        firstName: req.body.firstName, 
-        lastName: req.body.lastName,
-        email: req.body.email,
-        avatar: req.body.avatar
-    });
+    if (req.file === undefined) {
+      const newUser = new User({
+          username: req.body.username, 
+          firstName: req.body.firstName, 
+          lastName: req.body.lastName,
+          email: req.body.email,
+          image: "",
+          imageId: ""
+      });
 
-    const userPassword = req.body.password;
-    if(req.body.adminCode === 'secretcode123') {
-        newUser.isAdmin = true;
-    }
-    User.register(newUser, userPassword, function(err, user){
-        if(err){
-            // req.flash("error", err.message);
-            return res.render("register", {error: err.message});
+      const userPassword = req.body.password;
+      if(req.body.adminCode === 'secretcode123') {
+          newUser.isAdmin = true;
+      }
+      User.register(newUser, userPassword, function(err, user){
+          if(err){
+              // req.flash("error", err.message);
+              return res.render("register", {error: err.message});
+          }
+          passport.authenticate("local")(req, res, function(){
+              req.flash("success","Welcome to YelpCamp " + user.username);
+              res.redirect("/campgrounds");
+          })
+      });
+    } else {
+      cloudinary.uploader.upload(
+        req.file.path, {
+          width: 400,
+          height: 400,
+          gravity: "center",
+          crop: "scale"
+        },
+        function(err, result) {
+          if (err) {
+            req.flash("error", err.messsage);
+            return res.redirect("back");
+          }
+          req.body.image = result.secure_url;
+          req.body.imageId = result.public_id;
+          var newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            phone: req.body.phone,
+            fullName: req.body.fullName,
+            image: req.body.image,
+            imageId: req.body.imageId
+          });
+          User.register(newUser, req.body.password, function(err, user) {
+            if (err) {
+              return res.render("register", {
+                error: err.message
+              });
+            }
+            passport.authenticate("local")(req, res, function() {
+              res.redirect("/campgrounds");
+            });
+          });
+        }, {
+          moderation: "webpurify"
         }
-        passport.authenticate("local")(req, res, function(){
-            req.flash("success","Welcome to YelpCamp " + user.username);
-            res.redirect("/campgrounds");
-        })
-    });
+      );
+    }
 });
 
 //show login form
@@ -76,10 +140,10 @@ router.get("/logout", function(req, res){
 });
 
 //USER PROFILE
-router.get("/users/:id", function(req, res){
-    User.findById(req.params.id, function(err, foundUser){
-        if(err){
-            req.flash("error","Something went wrong");
+router.get("/users/:user_id", function(req, res){
+    User.findById(req.params.user_id, function(err, foundUser){
+        if(err || !foundUser){
+            req.flash("error","This user doesn't exist");
             res.redirect("back");
         }
         Campground.find().where("author.id").equals(foundUser._id).exec(function(err, campgrounds){
@@ -87,11 +151,109 @@ router.get("/users/:id", function(req, res){
                 req.flash("error","Something went wrong");
                 res.redirect("back");
             }
-            res.render("users/show", {user: foundUser, campgrounds: campgrounds});
+            Comment.find()
+              .where("author.id")
+              .equals(foundUser._id)
+              .exec(function(err, ratedCount) {
+                if (err) {
+                  req.flash("error", "Something went wrong");
+                  res.render("error");
+                }
+                res.render("users/show", {
+                  user: foundUser,
+                  campgrounds: campgrounds,
+                  reviews: ratedCount
+                });
+            });
+            // res.render("users/show", {user: foundUser, campgrounds: campgrounds});
         });
         
-    })
+    });
 });
+
+// EDIT USER PROFILE
+router.get("/users/:user_id/edit", middleware.isLoggedIn, middleware.checkProfileOwnership, function(req, res) {
+    res.render("users/edit", {user: req.user_id});
+  }
+);
+
+// update profile
+router.put(
+  "/users/:user_id",
+  upload.single("image"),
+  middleware.checkProfileOwnership,
+  function(req, res) {
+    User.findById(req.params.user_id, async function(err, user) {
+      if (err) {
+        req.flash("error", err.message);
+      } else {
+        if (req.file) {
+          try {
+            await cloudinary.uploader.destroy(user.imageId);
+            var result = await cloudinary.uploader.upload(req.file.path, {
+              width: 400,
+              height: 400,
+              gravity: "center",
+              crop: "scale"
+            }, {
+              moderation: "webpurify"
+            });
+            user.imageId = result.public_id;
+            user.image = result.secure_url;
+          } catch (err) {
+            req.flash("error", err.message);
+            return res.redirect("back");
+          }
+        }
+        user.email = req.body.email;
+        user.phone = req.body.phone;
+        user.fullName = req.body.fullName;
+        user.save();
+        req.flash("success", "Updated your profile!");
+        res.redirect("/users/" + req.params.user_id);
+      }
+    });
+  }
+);
+
+// update profile
+router.put(
+  "/users/:user_id",
+  upload.single("image"),
+  middleware.checkProfileOwnership,
+  function(req, res) {
+    User.findById(req.params.user_id, async function(err, user) {
+      if (err) {
+        req.flash("error", err.message);
+      } else {
+        if (req.file) {
+          try {
+            await cloudinary.uploader.destroy(user.imageId);
+            var result = await cloudinary.uploader.upload(req.file.path, {
+              width: 400,
+              height: 400,
+              gravity: "center",
+              crop: "scale"
+            }, {
+              moderation: "webpurify"
+            });
+            user.imageId = result.public_id;
+            user.image = result.secure_url;
+          } catch (err) {
+            req.flash("error", err.message);
+            return res.redirect("back");
+          }
+        }
+        user.email = req.body.email;
+        user.phone = req.body.phone;
+        user.fullName = req.body.fullName;
+        user.save();
+        req.flash("success", "Updated your profile!");
+        res.redirect("/users/" + req.params.user_id);
+      }
+    });
+  }
+);
 
 // follow user
 router.get('/follow/:id', middleware.isLoggedIn, async function(req, res) {

@@ -190,12 +190,12 @@ router.post("/:id/like", middleware.isLoggedIn, function (req, res) {
 
         // check if req.user._id exists in foundCampground.likes
         const foundUserLike = foundCampground.likes.some(function (like) {
-            return like.equals(req.user._id);
+            return like.equals(req.user._id, req.user.username);
         });
 
         if (foundUserLike) {
             // user already liked, removing like
-            foundCampground.likes.pull(req.user._id);
+            foundCampground.likes.pull(req.user._id, req.user.username);
         } else {
             // adding the new user like
             foundCampground.likes.push(req.user);
