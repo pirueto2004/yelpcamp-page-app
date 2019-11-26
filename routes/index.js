@@ -59,6 +59,7 @@ router.post("/register", upload.single("image"),function(req, res){
           firstName: req.body.firstName, 
           lastName: req.body.lastName,
           email: req.body.email,
+          phone: req.body.phone,
           image: "",
           imageId: ""
       });
@@ -94,9 +95,10 @@ router.post("/register", upload.single("image"),function(req, res){
           req.body.imageId = result.public_id;
           var newUser = new User({
             username: req.body.username,
+            firstName: req.body.firstName, 
+            lastName: req.body.lastName,
             email: req.body.email,
             phone: req.body.phone,
-            fullName: req.body.fullName,
             image: req.body.image,
             imageId: req.body.imageId
           });
