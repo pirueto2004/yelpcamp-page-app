@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
+    phone: String,
     image: String,
     imageId: String,
     joined: { type: Date, default: Date.now },

@@ -161,23 +161,30 @@ router.get("/users/:user_id", function(req, res){
                   req.flash("error", "Something went wrong");
                   res.render("error");
                 }
+                
                 res.render("users/show", {
                   user: foundUser,
                   campgrounds: campgrounds,
                   reviews: ratedCount
                 });
             });
-            // res.render("users/show", {user: foundUser, campgrounds: campgrounds});
         });
-        
     });
 });
 
-// EDIT USER PROFILE
-router.get("/users/:user_id/edit", middleware.isLoggedIn, middleware.checkProfileOwnership, function(req, res) {
-    res.render("users/edit", {user: req.user_id});
-  }
-);
+// edit profile
+router.get(
+  "/users/:user_id/edit",
+  middleware.isLoggedIn,
+  middleware.checkProfileOwnership,
+  function(req, res) {
+    User.findById(req.params.user_id, function(err, user){
+      res.render("users/edit", {user: user});
+    });
+    
+});
+
+
 
 // update profile
 router.put(
@@ -192,7 +199,7 @@ router.put(
         if (req.file) {
           try {
             await cloudinary.uploader.destroy(user.imageId);
-            var result = await cloudinary.uploader.upload(req.file.path, {
+            const result = await cloudinary.uploader.upload(req.file.path, {
               width: 400,
               height: 400,
               gravity: "center",
@@ -209,53 +216,19 @@ router.put(
         }
         user.email = req.body.email;
         user.phone = req.body.phone;
-        user.fullName = req.body.fullName;
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
         user.save();
+        
         req.flash("success", "Updated your profile!");
-        res.redirect("/users/" + req.params.user_id);
+        res.redirect("/users/" + user._id);
+       
       }
     });
   }
 );
 
-// update profile
-router.put(
-  "/users/:user_id",
-  upload.single("image"),
-  middleware.checkProfileOwnership,
-  function(req, res) {
-    User.findById(req.params.user_id, async function(err, user) {
-      if (err) {
-        req.flash("error", err.message);
-      } else {
-        if (req.file) {
-          try {
-            await cloudinary.uploader.destroy(user.imageId);
-            var result = await cloudinary.uploader.upload(req.file.path, {
-              width: 400,
-              height: 400,
-              gravity: "center",
-              crop: "scale"
-            }, {
-              moderation: "webpurify"
-            });
-            user.imageId = result.public_id;
-            user.image = result.secure_url;
-          } catch (err) {
-            req.flash("error", err.message);
-            return res.redirect("back");
-          }
-        }
-        user.email = req.body.email;
-        user.phone = req.body.phone;
-        user.fullName = req.body.fullName;
-        user.save();
-        req.flash("success", "Updated your profile!");
-        res.redirect("/users/" + req.params.user_id);
-      }
-    });
-  }
-);
+
 
 // follow user
 router.get('/follow/:id', middleware.isLoggedIn, async function(req, res) {
