@@ -45,7 +45,7 @@ cloudinary.config({
 
 //"/campgrounds" => "The Campgrounds Page"
 router.get("/", function(req, res) {
-    const perPage = 8;
+    const perPage = 9;
     const pageQuery = parseInt(req.query.page);
     const pageNumber = pageQuery ? pageQuery : 1;
     // eval(require('locus'));
